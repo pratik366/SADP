@@ -106,3 +106,48 @@ public class Main {
         remote.pressUndo();     // Undo OFF → previous speed
     }
 }
+
+
+// Sai code
+
+// Command interface
+interface Command {
+    void execute();
+    void undo();
+}
+
+// Receiver
+class CeilingFan {
+    void high() { System.out.println("Ceiling Fan is HIGH"); }
+    void off()  { System.out.println("Ceiling Fan is OFF"); }
+}
+
+// Concrete Command
+class FanHighCommand implements Command {
+    private CeilingFan fan;
+    FanHighCommand(CeilingFan fan) { this.fan = fan; }
+
+    public void execute() { fan.high(); }
+    public void undo()    { fan.off(); }
+}
+
+// Invoker
+class RemoteControl {
+    private Command command;
+    void setCommand(Command c) { command = c; }
+    void pressButton() { command.execute(); }
+    void pressUndo()   { command.undo(); }
+}
+
+// Client
+public class CeilingFanDemo {
+    public static void main(String[] args) 
+    {
+        CeilingFan fan = new CeilingFan();
+        RemoteControl remote = new RemoteControl();
+
+        remote.setCommand(new FanHighCommand(fan));
+        remote.pressButton();  // Fan HIGH
+        remote.pressUndo();    // Fan OFF
+    }
+}
