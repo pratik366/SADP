@@ -1,0 +1,42 @@
+class Singleton {
+
+    // 1. Create one static object (but not initialized yet)
+    private static Singleton instance;
+
+    // 2. Private constructor (so no one can create object)
+    private Singleton() {
+        System.out.println("Singleton object created");
+    }
+
+    // 3. Thread-safe method to get the instance
+    public static synchronized Singleton getInstance() {
+        if (instance == null) {          // object not created yet
+            instance = new Singleton();  // create only once
+        }
+        return instance;                 // always return same object
+    }
+
+    public void showMessage() {
+        System.out.println("Hello from Singleton!");
+    }
+}
+
+// ---- MAIN CLASS TO TEST MULTITHREADING ----
+public class Main {
+    public static void main(String[] args) {
+
+        // Two threads to check if singleton is same object
+        Thread t1 = new Thread(() -> {
+            Singleton s1 = Singleton.getInstance();
+            s1.showMessage();
+        });
+
+        Thread t2 = new Thread(() -> {
+            Singleton s2 = Singleton.getInstance();
+            s2.showMessage();
+        });
+
+        t1.start();
+        t2.start();
+    }
+}
