@@ -1,0 +1,84 @@
+// ------ PIZZA BASE CLASS ------
+abstract class Pizza {
+    String name;
+
+    void prepare() { System.out.println("Preparing " + name); }
+    void bake()    { System.out.println("Baking " + name); }
+    void cut()     { System.out.println("Cutting " + name); }
+    void box()     { System.out.println("Boxing " + name); }
+
+    String getName() { return name; }
+}
+
+// ------ NY STYLE CHEESE PIZZA ------
+class NYCheesePizza extends Pizza {
+    NYCheesePizza() {
+        name = "New York Style Cheese Pizza";
+    }
+}
+
+// ------ CHICAGO STYLE CHEESE PIZZA ------
+class ChicagoCheesePizza extends Pizza {
+    ChicagoCheesePizza() {
+        name = "Chicago Style Cheese Pizza";
+    }
+
+    @Override
+    void cut() {
+        System.out.println("Cutting Chicago pizza into square slices");
+    }
+}
+
+// ------ ABSTRACT FACTORY METHOD STORE ------
+abstract class PizzaStore {
+
+    // Template Method
+    public Pizza orderPizza(String type) {
+        Pizza pizza = createPizza(type); // FACTORY METHOD
+
+        pizza.prepare();
+        pizza.bake();
+        pizza.cut();
+        pizza.box();
+
+        return pizza;
+    }
+
+    // Factory Method (subclasses override this)
+    protected abstract Pizza createPizza(String type);
+}
+
+// ------ NY PIZZA STORE ------
+class NYPizzaStore extends PizzaStore {
+    protected Pizza createPizza(String type) {
+        if (type.equals("cheese")) {
+            return new NYCheesePizza();
+        }
+        return null;
+    }
+}
+
+// ------ CHICAGO PIZZA STORE ------
+class ChicagoPizzaStore extends PizzaStore {
+    protected Pizza createPizza(String type) {
+        if (type.equals("cheese")) {
+            return new ChicagoCheesePizza();
+        }
+        return null;
+    }
+}
+
+// ------ MAIN CLASS ------
+public class Main {
+    public static void main(String[] args) {
+
+        PizzaStore ny = new NYPizzaStore();
+        PizzaStore chicago = new ChicagoPizzaStore();
+
+        System.out.println("ORDER FROM NY STORE:");
+        ny.orderPizza("cheese");
+
+        System.out.println("\nORDER FROM CHICAGO STORE:");
+        chicago.orderPizza("cheese");
+    }
+}
