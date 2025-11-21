@@ -1,0 +1,108 @@
+// ---- COMMAND INTERFACE ----
+interface Command {
+    void execute();
+    void undo();
+}
+
+// ---- RECEIVER: CEILING FAN ----
+class CeilingFan {
+    int speed = 0;  // 0 = OFF, 1 = LOW, 2 = MED, 3 = HIGH
+
+    public void high() {
+        speed = 3;
+        System.out.println("Fan speed HIGH");
+    }
+    public void medium() {
+        speed = 2;
+        System.out.println("Fan speed MEDIUM");
+    }
+    public void low() {
+        speed = 1;
+        System.out.println("Fan speed LOW");
+    }
+    public void off() {
+        speed = 0;
+        System.out.println("Fan OFF");
+    }
+
+    public int getSpeed() { return speed; }
+}
+
+// ---- COMMAND: SET FAN TO HIGH ----
+class FanHighCommand implements Command {
+    CeilingFan fan;
+    int prevSpeed;
+
+    FanHighCommand(CeilingFan fan) { this.fan = fan; }
+
+    public void execute() {
+        prevSpeed = fan.getSpeed();  // save previous
+        fan.high();
+    }
+
+    public void undo() {
+        if (prevSpeed == 3) fan.high();
+        else if (prevSpeed == 2) fan.medium();
+        else if (prevSpeed == 1) fan.low();
+        else fan.off();
+    }
+}
+
+// ---- COMMAND: TURN FAN OFF ----
+class FanOffCommand implements Command {
+    CeilingFan fan;
+    int prevSpeed;
+
+    FanOffCommand(CeilingFan fan) { this.fan = fan; }
+
+    public void execute() {
+        prevSpeed = fan.getSpeed();  // save previous
+        fan.off();
+    }
+
+    public void undo() {
+        if (prevSpeed == 3) fan.high();
+        else if (prevSpeed == 2) fan.medium();
+        else if (prevSpeed == 1) fan.low();
+        else fan.off();
+    }
+}
+
+// ---- REMOTE CONTROL (INVOKER) ----
+class RemoteControl {
+    Command slot;
+    Command undoCommand;
+
+    public void setCommand(Command command) {
+        slot = command;
+    }
+
+    public void pressButton() {
+        slot.execute();
+        undoCommand = slot;
+    }
+
+    public void pressUndo() {
+        undoCommand.undo();
+    }
+}
+
+// ---- MAIN CLASS ----
+public class Main {
+    public static void main(String[] args) {
+
+        CeilingFan fan = new CeilingFan();
+        RemoteControl remote = new RemoteControl();
+
+        Command fanHigh = new FanHighCommand(fan);
+        Command fanOff  = new FanOffCommand(fan);
+
+        remote.setCommand(fanHigh);
+        remote.pressButton();   // HIGH
+        remote.pressUndo();     // Undo HIGH → previous speed
+
+        remote.setCommand(fanOff);
+        remote.pressButton();   // OFF
+        remote.pressUndo();     // Undo OFF → previous speed
+    }
+}
