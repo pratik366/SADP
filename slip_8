@@ -1,0 +1,113 @@
+// ----- STATE INTERFACE -----
+interface State {
+    void insertCoin();
+    void turnCrank();
+    void dispense();
+}
+
+// ----- NO COIN STATE -----
+class NoCoinState implements State {
+    GumballMachine machine;
+
+    NoCoinState(GumballMachine m) { this.machine = m; }
+
+    public void insertCoin() {
+        System.out.println("Coin inserted.");
+        machine.setState(machine.hasCoinState);
+    }
+
+    public void turnCrank() {
+        System.out.println("Insert coin first!");
+    }
+
+    public void dispense() {
+        System.out.println("No coin, no gumball.");
+    }
+}
+
+// ----- HAS COIN STATE -----
+class HasCoinState implements State {
+    GumballMachine machine;
+
+    HasCoinState(GumballMachine m) { this.machine = m; }
+
+    public void insertCoin() {
+        System.out.println("Already inserted a coin!");
+    }
+
+    public void turnCrank() {
+        System.out.println("Crank turned...");
+        machine.setState(machine.soldState);
+    }
+
+    public void dispense() {
+        System.out.println("Turn the crank first!");
+    }
+}
+
+// ----- SOLD STATE -----
+class SoldState implements State {
+    GumballMachine machine;
+
+    SoldState(GumballMachine m) { this.machine = m; }
+
+    public void insertCoin() {
+        System.out.println("Please wait, dispensing gumball...");
+    }
+
+    public void turnCrank() {
+        System.out.println("Already turned!");
+    }
+
+    public void dispense() {
+        System.out.println("Gumball comes rolling out!");
+        machine.releaseBall();
+        machine.setState(machine.noCoinState);
+    }
+}
+
+// ----- GUMBALL MACHINE -----
+class GumballMachine {
+    State noCoinState;
+    State hasCoinState;
+    State soldState;
+
+    State state;
+
+    int count = 0;
+
+    GumballMachine(int count) {
+        this.count = count;
+
+        noCoinState = new NoCoinState(this);
+        hasCoinState = new HasCoinState(this);
+        soldState = new SoldState(this);
+
+        state = noCoinState;
+    }
+
+    void setState(State s) { state = s; }
+
+    void insertCoin() { state.insertCoin(); }
+    void turnCrank() { state.turnCrank(); }
+    void dispense()   { state.dispense(); }
+
+    void releaseBall() {
+        if (count > 0) {
+            count--;
+        }
+    }
+}
+
+// ----- TEST -----
+public class Main {
+    public static void main(String[] args) {
+        GumballMachine g = new GumballMachine(5);
+
+        g.insertCoin();
+        g.turnCrank();
+        g.dispense();
+
+        System.out.println("Remaining: " + g.count);
+    }
+}
