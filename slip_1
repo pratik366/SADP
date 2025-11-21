@@ -1,0 +1,39 @@
+import java.io.*;
+
+class LowerCaseReader extends FilterReader {
+
+    protected LowerCaseReader(Reader in) {
+        super(in);
+    }
+
+    @Override
+    public int read() throws IOException {
+        int c = super.read();   // read one character
+        if (c == -1) return -1; // end of stream
+        return Character.toLowerCase((char) c); // convert to lowercase
+    }
+}
+
+// --- MAIN CLASS ---
+public class Main {
+    public static void main(String[] args) {
+        try {
+            String text = "HELLO JAVA DECORATOR PATTERN";
+
+            // Create normal reader
+            Reader r = new StringReader(text);
+
+            LowerCaseReader lcr = new LowerCaseReader(r);
+
+            System.out.print("Output: ");
+
+            int ch;
+            while ((ch = lcr.read()) != -1) {
+                System.out.print((char) ch);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
