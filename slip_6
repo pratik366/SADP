@@ -1,0 +1,66 @@
+// ----- COMMAND INTERFACE -----
+interface Command {
+    void execute();
+}
+
+// ----- RECEIVER (Light) -----
+class Light {
+    public void on() {
+        System.out.println("Light is ON");
+    }
+    public void off() {
+        System.out.println("Light is OFF");
+    }
+}
+
+// ----- CONCRETE COMMANDS -----
+class LightOnCommand implements Command {
+    Light light;
+    public LightOnCommand(Light light) {
+        this.light = light;
+    }
+    public void execute() {
+        light.on();
+    }
+}
+
+class LightOffCommand implements Command {
+    Light light;
+    public LightOffCommand(Light light) {
+        this.light = light;
+    }
+    public void execute() {
+        light.off();
+    }
+}
+
+// ----- INVOKER (Remote Control) -----
+class RemoteControl {
+    Command slot;   // only one button for simplicity
+
+    public void setCommand(Command command) {
+        slot = command;
+    }
+
+    public void buttonPressed() {
+        slot.execute();
+    }
+}
+
+// ----- MAIN CLASS -----
+public class Main {
+    public static void main(String[] args) {
+
+        Light light = new Light();  // receiver
+        
+        RemoteControl remote = new RemoteControl();  // invoker
+
+        // Test Light ON
+        remote.setCommand(new LightOnCommand(light));
+        remote.buttonPressed();
+
+        // Test Light OFF
+        remote.setCommand(new LightOffCommand(light));
+        remote.buttonPressed();
+    }
+}
