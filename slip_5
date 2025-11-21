@@ -1,0 +1,44 @@
+import java.util.*;
+
+// ----- ADAPTER: Enumeration to Iterator -----
+class EnumerationIterator implements Iterator<Object> {
+
+    Enumeration<?> enumeration;
+
+    public EnumerationIterator(Enumeration<?> enumeration) {
+        this.enumeration = enumeration;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return enumeration.hasMoreElements();
+    }
+
+    @Override
+    public Object next() {
+        return enumeration.nextElement();
+    }
+}
+
+// ----- MAIN CLASS -----
+public class Main {
+    public static void main(String[] args) {
+
+        // Old style: Vector gives Enumeration
+        Vector<String> v = new Vector<>();
+        v.add("Apple");
+        v.add("Banana");
+        v.add("Mango");
+
+        Enumeration<String> e = v.elements();
+
+        // Using our Adapter to convert Enumeration -> Iterator
+        Iterator<Object> it = new EnumerationIterator(e);
+
+        System.out.println("Iterating using Iterator (Adapted):");
+
+        while (it.hasNext()) {
+            System.out.println(it.next());
+        }
+    }
+}
