@@ -1,0 +1,65 @@
+// ---- Flying Behaviors ----
+interface FlyBehavior {
+    void fly();
+}
+
+class FlyWithWings implements FlyBehavior {
+    public void fly() { System.out.println("Flying with wings"); }
+}
+
+class FlyNoWay implements FlyBehavior {
+    public void fly() { System.out.println("I can't fly"); }
+}
+
+
+// ---- Quack Behaviors ----
+interface QuackBehavior {
+    void quack();
+}
+
+class NormalQuack implements QuackBehavior {
+    public void quack() { System.out.println("Quack!"); }
+}
+
+class MuteQuack implements QuackBehavior {
+    public void quack() { System.out.println("<< Silent >>"); }
+}
+
+
+// ---- Duck Class (HAS-A behaviors) ----
+class Duck {
+    FlyBehavior flyBehavior;      // current flying behavior
+    QuackBehavior quackBehavior;  // current quacking behavior
+
+    Duck(FlyBehavior fb, QuackBehavior qb) {
+        flyBehavior = fb;
+        quackBehavior = qb;
+    }
+
+    void performFly() { flyBehavior.fly(); }
+    void performQuack() { quackBehavior.quack(); }
+
+    // allow changing behavior at runtime
+    void setFlyBehavior(FlyBehavior fb) { flyBehavior = fb; }
+    void setQuackBehavior(QuackBehavior qb) { quackBehavior = qb; }
+}
+
+
+// ---- Test ----
+public class Main {
+    public static void main(String[] args) {
+
+        // Duck with wings + normal quack
+        Duck d = new Duck(new FlyWithWings(), new NormalQuack());
+
+        d.performFly();    // Flying with wings
+        d.performQuack();  // Quack!
+
+        // Change behavior at runtime
+        d.setFlyBehavior(new FlyNoWay());
+        d.setQuackBehavior(new MuteQuack());
+
+        d.performFly();    // I can't fly
+        d.performQuack();  // << Silent >>
+    }
+}
