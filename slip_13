@@ -1,0 +1,50 @@
+// ---- Volt Class ----
+class Volt {
+    private int volts;
+
+    Volt(int v) {
+        volts = v;
+    }
+
+    int getVolts() {
+        return volts;
+    }
+}
+
+// ---- Socket (Old Class giving 120V) ----
+class Socket {
+    Volt getVolt() {
+        return new Volt(120);
+    }
+}
+
+// ---- Adapter (Class Adapter: extends Socket) ----
+class SocketAdapter extends Socket {
+
+    // convert 120 → 3
+    Volt get3Volt() {
+        return new Volt(getVolt().getVolts() / 40);
+    }
+
+    // convert 120 → 12
+    Volt get12Volt() {
+        return new Volt(getVolt().getVolts() / 10);
+    }
+
+    // default 120
+    Volt get120Volt() {
+        return getVolt();  
+    }
+}
+
+// ---- Client Test ----
+public class Main {
+    public static void main(String[] args) {
+
+        SocketAdapter adapter = new SocketAdapter();
+
+        System.out.println("3 Volt  = " + adapter.get3Volt().getVolts());
+        System.out.println("12 Volt = " + adapter.get12Volt().getVolts());
+        System.out.println("120 Volt = " + adapter.get120Volt().getVolts());
+    }
+}
