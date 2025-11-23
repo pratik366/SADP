@@ -1,0 +1,105 @@
+// ----- SUBJECT (Number) -----
+import java.util.*;
+
+class NumberSubject {
+    private int number;                     // actual number
+    private List<Observer> observers;       // all observers
+
+    NumberSubject() {
+        observers = new ArrayList<>();
+    }
+
+    void addObserver(Observer o) {
+        observers.add(o);
+    }
+
+    void setNumber(int num) {               // update number
+        number = num;
+        notifyAllObservers();               // inform all observers
+    }
+
+    int getNumber() {
+        return number;
+    }
+
+    void notifyAllObservers() {
+        for (Observer o : observers) {
+            o.update();
+        }
+    }
+}
+
+
+// ----- OBSERVER INTERFACE -----
+interface Observer {
+    void update();
+}
+
+
+// ----- BINARY OBSERVER -----
+class BinaryObserver implements Observer {
+    private NumberSubject subject;
+
+    BinaryObserver(NumberSubject s) {
+        subject = s;
+        subject.addObserver(this);
+    }
+
+    public void update() {
+        System.out.println("Binary: " +
+            Integer.toBinaryString(subject.getNumber()));
+    }
+}
+
+
+// ----- OCTAL OBSERVER -----
+class OctalObserver implements Observer {
+    private NumberSubject subject;
+
+    OctalObserver(NumberSubject s) {
+        subject = s;
+        subject.addObserver(this);
+    }
+
+    public void update() {
+        System.out.println("Octal: " +
+            Integer.toOctalString(subject.getNumber()));
+    }
+}
+
+
+// ----- HEXA OBSERVER -----
+class HexObserver implements Observer {
+    private NumberSubject subject;
+
+    HexObserver(NumberSubject s) {
+        subject = s;
+        subject.addObserver(this);
+    }
+
+    public void update() {
+        System.out.println("Hex: " +
+            Integer.toHexString(subject.getNumber()).toUpperCase());
+    }
+}
+
+
+// ----- MAIN TEST -----
+public class Main {
+    public static void main(String[] args) {
+
+        NumberSubject number = new NumberSubject();
+
+        // attach observers
+        new BinaryObserver(number);
+        new OctalObserver(number);
+        new HexObserver(number);
+
+        // change number
+        System.out.println("Setting number = 15");
+        number.setNumber(15);
+
+        System.out.println("Setting number = 100");
+        number.setNumber(100);
+    }
+}
