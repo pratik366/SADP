@@ -1,0 +1,38 @@
+// ---- Target Interface (Client wants this) ----
+interface BeatModel {
+    int getBeat();  // method client needs
+}
+
+
+// ---- Adaptee (Old Heart Model) ----
+class HeartModel {
+    int getHeartRate() {        // old method
+        return 72;
+    }
+}
+
+
+// ---- Adapter (Converts HeartModel → BeatModel) ----
+class HeartToBeatAdapter implements BeatModel {
+    private HeartModel heart;   // using old class
+
+    HeartToBeatAdapter(HeartModel heart) {
+        this.heart = heart;
+    }
+
+    // Convert getBeat() → getHeartRate()
+    public int getBeat() {
+        return heart.getHeartRate();
+    }
+}
+
+
+// ---- Client ----
+public class Main {
+    public static void main(String[] args) {
+        HeartModel heart = new HeartModel();               // old class
+        BeatModel beat = new HeartToBeatAdapter(heart);    // adapter in between
+
+        System.out.println("Beat : " + beat.getBeat());
+    }
+}
