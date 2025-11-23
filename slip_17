@@ -1,0 +1,75 @@
+// ----- 1. Product Interface -----
+interface Shape {
+    void draw();
+}
+
+// ----- 2. Concrete Products -----
+class Circle implements Shape {
+    public void draw() { System.out.println("Normal Circle"); }
+}
+
+class Square implements Shape {
+    public void draw() { System.out.println("Normal Square"); }
+}
+
+class RoundedCircle implements Shape {
+    public void draw() { System.out.println("Rounded Circle"); }
+}
+
+class RoundedSquare implements Shape {
+    public void draw() { System.out.println("Rounded Square"); }
+}
+
+
+// ----- 3. Abstract Factory -----
+interface ShapeFactory {
+    Shape getShape(String type);
+}
+
+
+// ----- 4. Concrete Factories -----
+class NormalShapeFactory implements ShapeFactory {
+    public Shape getShape(String type) {
+        if (type.equalsIgnoreCase("circle"))
+            return new Circle();
+        else
+            return new Square();
+    }
+}
+
+class RoundedShapeFactory implements ShapeFactory {
+    public Shape getShape(String type) {
+        if (type.equalsIgnoreCase("circle"))
+            return new RoundedCircle();
+        else
+            return new RoundedSquare();
+    }
+}
+
+
+// ----- 5. Factory Producer -----
+class FactoryProducer {
+    static ShapeFactory getFactory(boolean rounded) {
+        if (rounded)
+            return new RoundedShapeFactory();
+        else
+            return new NormalShapeFactory();
+    }
+}
+
+
+// ----- 6. Client Code -----
+public class Main {
+    public static void main(String[] args) {
+
+        // Normal factory
+        ShapeFactory normal = FactoryProducer.getFactory(false);
+        Shape s1 = normal.getShape("circle");
+        s1.draw();
+
+        // Rounded factory
+        ShapeFactory rounded = FactoryProducer.getFactory(true);
+        Shape s2 = rounded.getShape("square");
+        s2.draw();
+    }
+}
