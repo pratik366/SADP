@@ -1,0 +1,92 @@
+/************ COMMAND INTERFACE ************/
+interface Command {
+    void execute();
+}
+
+/************ RECEIVERS (Real devices) ************/
+class Light {
+    void on()  { System.out.println("Light is ON"); }
+    void off() { System.out.println("Light is OFF"); }
+}
+
+class GarageDoor {
+    void up() { System.out.println("Garage Door OPEN"); }
+}
+
+class Stereo {
+    void on()  { System.out.println("Stereo ON"); }
+    void playCD() { System.out.println("CD Playing..."); }
+}
+
+/************ COMMAND CLASSES ************/
+class LightOnCommand implements Command {
+    Light light;
+    LightOnCommand(Light l) { light = l; }
+    public void execute() { light.on(); }
+}
+
+class LightOffCommand implements Command {
+    Light light;
+    LightOffCommand(Light l) { light = l; }
+    public void execute() { light.off(); }
+}
+
+class GarageDoorUpCommand implements Command {
+    GarageDoor gd;
+    GarageDoorUpCommand(GarageDoor g) { gd = g; }
+    public void execute() { gd.up(); }
+}
+
+class StereoOnWithCDCommand implements Command {
+    Stereo stereo;
+    StereoOnWithCDCommand(Stereo s) { stereo = s; }
+    public void execute() {
+        stereo.on();
+        stereo.playCD();
+    }
+}
+
+/************ INVOKER ************/
+class RemoteControl {
+    Command slot;   // only one button for simplicity
+
+    void setCommand(Command c) {
+        slot = c;
+    }
+
+    void pressButton() {
+        slot.execute();
+    }
+}
+
+/************ CLIENT ************/
+public class Main {
+    public static void main(String[] args) {
+
+        // Receivers
+        Light light = new Light();
+        GarageDoor garage = new GarageDoor();
+        Stereo stereo = new Stereo();
+
+        // Commands
+        Command lightOn  = new LightOnCommand(light);
+        Command lightOff = new LightOffCommand(light);
+        Command garageUp = new GarageDoorUpCommand(garage);
+        Command stereoCD = new StereoOnWithCDCommand(stereo);
+
+        // Invoker
+        RemoteControl remote = new RemoteControl();
+
+        remote.setCommand(lightOn);
+        remote.pressButton();
+
+        remote.setCommand(lightOff);
+        remote.pressButton();
+
+        remote.setCommand(garageUp);
+        remote.pressButton();
+
+        remote.setCommand(stereoCD);
+        remote.pressButton();
+    }
+}
