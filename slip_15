@@ -1,0 +1,42 @@
+// -------- Sub Systems (TV, Sound System, Lights) --------
+class TV {
+    void on() { System.out.println("TV ON"); }
+}
+
+class SoundSystem {
+    void start() { System.out.println("Sound System Started"); }
+}
+
+class Lights {
+    void dim() { System.out.println("Lights Dimmed"); }
+}
+
+
+// -------- Facade Class --------
+class HomeTheaterFacade {
+    private TV tv;
+    private SoundSystem ss;
+    private Lights lights;
+
+    HomeTheaterFacade() {
+        tv = new TV();
+        ss = new SoundSystem();
+        lights = new Lights();
+    }
+
+    void watchMovie() {
+        tv.on();
+        ss.start();
+        lights.dim();
+        System.out.println("Movie Started!");
+    }
+}
+
+
+// -------- Client --------
+public class Main {
+    public static void main(String[] args) {
+        HomeTheaterFacade home = new HomeTheaterFacade();
+        home.watchMovie(); 
+    }
+}
